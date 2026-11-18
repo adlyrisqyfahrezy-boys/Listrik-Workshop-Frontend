@@ -5,12 +5,15 @@ import PetaLokasi from "./components/PetaLokasi.jsx";
 import KartuRuang from "./components/KartuRuang.jsx";
 import FormLokasi from "./components/FormLokasi.jsx";
 import PemilihLokasi from "./components/PemilihLokasi.jsx";
+import HalamanLogin from "./components/HalamanLogin.jsx";
 
 export default function App() {
   const db = useInventory();
   const [idLokasiDipilih, setIdLokasiDipilih] = useState(null);
   const [tampilFormLokasi, setTampilFormLokasi] = useState(false);
   const [namaRuangBaru, setNamaRuangBaru] = useState("");
+  const [sudahMasuk, setSudahMasuk] = useState(false);
+  const [pengguna, setPengguna] = useState("");
 
   // Lokasi aktif: yang dipilih user, atau lokasi pertama kalau belum memilih.
   const lokasiAktif = db.lokasi.find((l) => l.id === idLokasiDipilih) ?? db.lokasi[0] ?? null;
@@ -50,6 +53,17 @@ export default function App() {
     }
   };
 
+  if (!sudahMasuk) {
+    return (
+      <HalamanLogin
+        onMasuk={(email) => {
+          setPengguna(email);
+          setSudahMasuk(true);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -73,7 +87,11 @@ export default function App() {
               onPilih={setIdLokasiDipilih}
             />
           )}
+          <span className="header-pengguna">{pengguna}</span>
           <button onClick={() => setTampilFormLokasi(true)}>+ Lokasi</button>
+          <button className="sekunder" onClick={() => setSudahMasuk(false)}>
+            Keluar
+          </button>
         </div>
       </header>
 

@@ -826,6 +826,102 @@ button.link.bahaya-teks:hover {
   animation: muncul 0.35s ease both;
 }
 
+.login-halaman {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 18px;
+}
+.login-kartu {
+  width: min(100%, 430px);
+  padding: 30px;
+  border: 1px solid var(--garis);
+  border-radius: 22px;
+  background: var(--kartu);
+  box-shadow: var(--bayang-angkat);
+  animation: muncul 0.35s ease both;
+}
+.login-sambutan {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+.login-eyebrow {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aksen);
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.login-grup {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.login-grup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--teks-redup);
+}
+.login-grup input {
+  font-size: 1rem;
+}
+.login-input-sandi {
+  display: flex;
+  gap: 8px;
+}
+.login-input-sandi input {
+  flex: 1;
+}
+.login-input-sandi button {
+  white-space: nowrap;
+  padding-inline: 10px;
+}
+.login-mata {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  padding: 0;
+}
+.login-mata svg {
+  width: 20px;
+  height: 20px;
+}
+.login-error {
+  margin: -6px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--bahaya-lembut);
+  color: var(--bahaya);
+  font-size: 0.8rem;
+}
+.login-form > button[type="submit"] {
+  margin-top: 4px;
+  padding-block: 12px;
+}
+.login-catatan {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--garis);
+  font-size: 0.75rem;
+  color: var(--teks-redup);
+  text-align: center;
+}
+.header-pengguna {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.82);
+  overflow-wrap: anywhere;
+  align-self: center;
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;

@@ -13,12 +13,29 @@ export default function KartuRuang({ ruang, perangkat, totalSemua, onTambahPeran
   };
 
   return (
-    <section className="kartu">
+    <section className="kartu ruang">
       <div className="kartu-judul">
-        <h3>{ruang.nama_ruang}</h3>
+        <div className="ruang-judul">
+          <span className="ikon-kartu" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+              <path d="m3 12 9 5 9-5" />
+              <path d="m3 16 9 5 9-5" />
+            </svg>
+          </span>
+          <h3>{ruang.nama_ruang}</h3>
+          <span className="badge-jumlah">{perangkat.length} perangkat</span>
+        </div>
         <button className="link bahaya-teks" onClick={hapusRuang}>
           Hapus ruang
         </button>
+      </div>
+
+      <div className="bagian">
+        <div className="bar" role="presentation">
+          <div className="bar-isi aksen" style={{ width: `${Math.min(porsi, 100)}%` }} />
+        </div>
+        <span>{formatPersen(porsi)}</span>
       </div>
 
       {perangkat.length === 0 ? (

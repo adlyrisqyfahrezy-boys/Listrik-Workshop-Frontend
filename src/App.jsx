@@ -4,6 +4,7 @@ import RingkasanBeban from "./components/RingkasanBeban.jsx";
 import PetaLokasi from "./components/PetaLokasi.jsx";
 import KartuRuang from "./components/KartuRuang.jsx";
 import FormLokasi from "./components/FormLokasi.jsx";
+import PemilihLokasi from "./components/PemilihLokasi.jsx";
 
 export default function App() {
   const db = useInventory();
@@ -33,12 +34,12 @@ export default function App() {
     };
   }, [db.ruang, db.perangkat, db.meteran, lokasiAktif]);
 
-  const tambahRuang = (e) => {
+  const tambahRuang = async (e) => {
     e.preventDefault();
     const nama = namaRuangBaru.trim();
     if (!nama || !lokasiAktif) return;
-    db.tambahRuang(nama, lokasiAktif.id);
-    setNamaRuangBaru("");
+    const hasil = await db.tambahRuang(nama, lokasiAktif.id);
+    if (hasil != null) setNamaRuangBaru("");
   };
 
   const hapusLokasi = () => {
@@ -52,26 +53,25 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div>
-          <h1>Listrik Workshop</h1>
-          <p className="kecil">Inventarisasi beban listrik per ruangan workshop</p>
+        <div className="brand">
+          <span className="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13.5 2 5 13h5.5L9 22l9-12h-5.5L13.5 2Z" />
+            </svg>
+          </span>
+          <div>
+            <h1>Listrik Workshop</h1>
+            <p className="kecil">Inventarisasi beban listrik per ruangan workshop</p>
+          </div>
         </div>
 
         <div className="pilih-lokasi">
           {db.lokasi.length > 0 && (
-            <label>
-              Lokasi
-              <select
-                value={lokasiAktif?.id ?? ""}
-                onChange={(e) => setIdLokasiDipilih(Number(e.target.value))}
-              >
-                {db.lokasi.map((l) => (
-                  <option key={l.id} value={l.id}>
-                    {l.nama_lokasi}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <PemilihLokasi
+              lokasi={db.lokasi}
+              aktif={lokasiAktif}
+              onPilih={setIdLokasiDipilih}
+            />
           )}
           <button onClick={() => setTampilFormLokasi(true)}>+ Lokasi</button>
         </div>
@@ -84,16 +84,31 @@ export default function App() {
           </div>
           <FormLokasi
             onBatal={() => setTampilFormLokasi(false)}
-            onTambah={(data) => {
-              const id = db.tambahLokasi(data);
-              setIdLokasiDipilih(id);
+            onTambah={async (data) => {
+              const id = await db.tambahLokasi(data);
+              if (id != null) setIdLokasiDipilih(id);
               setTampilFormLokasi(false);
             }}
           />
         </div>
       )}
 
-      {!lokasiAktif ? (
+      {db.aksiError && (
+        <div className="kartu kosong">
+          <p>Gagal menyimpan perubahan: {db.aksiError}</p>
+        </div>
+      )}
+
+      {db.loading ? (
+        <div className="kartu kosong">
+          <p>Memuat data dari backend…</p>
+        </div>
+      ) : db.error ? (
+        <div className="kartu kosong">
+          <p>Gagal memuat data: {db.error}</p>
+          <button onClick={() => db.muatUlang(true)}>Coba lagi</button>
+        </div>
+      ) : !lokasiAktif ? (
         <div className="kartu kosong">
           <p>Belum ada lokasi. Klik "+ Lokasi" untuk mulai mencatat.</p>
         </div>

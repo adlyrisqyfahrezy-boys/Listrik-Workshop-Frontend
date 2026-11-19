@@ -1,11 +1,13 @@
 import { useState } from "react";
 import IkonMata from "./IkonMata.jsx";
+import * as api from "../lib/api.js";
 
 const KOSONG = { email: "", password: "" };
 
-export default function HalamanLogin({ onMasuk }) {
+export default function HalamanLogin({ onMasuk, onKeDaftar, pesanSesi = "" }) {
   const [form, setForm] = useState(KOSONG);
   const [tampilPassword, setTampilPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const ubah = (e) => {
@@ -13,7 +15,7 @@ export default function HalamanLogin({ onMasuk }) {
     if (error) setError("");
   };
 
-  const kirim = (e) => {
+  const kirim = async (e) => {
     e.preventDefault();
     const email = form.email.trim();
     if (!email || !form.password) {
@@ -24,7 +26,17 @@ export default function HalamanLogin({ onMasuk }) {
       setError("Format email tidak valid.");
       return;
     }
-    onMasuk(email);
+
+    setLoading(true);
+    setError("");
+    try {
+      const hasil = await api.login(email, form.password);
+      onMasuk(email, hasil.pengguna);
+    } catch (err) {
+      setError(err.message || "Gagal masuk. Periksa kembali email dan kata sandi.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,17 +97,19 @@ export default function HalamanLogin({ onMasuk }) {
             </div>
           </div>
 
-          {error && (
+          {(error || pesanSesi) && (
             <p className="login-error" role="alert">
-              {error}
+              {error || pesanSesi}
             </p>
           )}
 
-          <button type="submit">Masuk</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Memproses..." : "Masuk"}
+          </button>
         </form>
 
         <p className="login-catatan">
-          Mode tampilan: email dan kata sandi apa pun akan membuka aplikasi.
+          Belum punya akun? <button type="button" className="link" onClick={onKeDaftar}>Daftar</button>
         </p>
       </section>
     </main>
